@@ -317,15 +317,17 @@ class RCTCameraViewFinder extends TextureView implements TextureView.SurfaceText
             }
 
             RCTCamera settings = RCTCamera.getInstance();
-            Camera.Parameters params = camera.getParameters();
-            int quality = 50; //set quality to lower, faster to work with
-
-            Camera.Parameters parameters = camera.getParameters();
-            Camera.Size previewSize = camera.getParameters().getPreviewSize();
-            int previewFormat = parameters.getPreviewFormat();
-            int previewWidth = previewSize.width;
-            int previewHeight = previewSize.height;
-
+            try {
+                Camera.Parameters parameters = camera.getParameters();
+                Camera.Size previewSize = camera.getParameters().getPreviewSize();
+                int previewFormat = parameters.getPreviewFormat();
+                int previewWidth = previewSize.width;
+                int previewHeight = previewSize.height;
+            } catch (Exception e) {
+                e.printStackTrace();
+                new ReaderAsyncTask(RCTCamera.getInstance().acquireCameraInstance(_cameraType), imageData).execute();
+                return null;
+            }
 
             // lets convert preview to bytearray that we can use
             YuvImage imageConvert = new YuvImage(this.imageData, previewFormat, previewWidth, previewHeight, null);
