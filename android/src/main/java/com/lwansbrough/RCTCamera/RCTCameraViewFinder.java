@@ -320,19 +320,20 @@ class RCTCameraViewFinder extends TextureView implements TextureView.SurfaceText
             Camera.Parameters params = camera.getParameters();
             int quality = 50; //set quality to lower, faster to work with
 
+            Camera.Parameters parameters = camera.getParameters();
+            Camera.Size previewSize = camera.getParameters().getPreviewSize();
+            int previewFormat = parameters.getPreviewFormat();
+            int previewWidth = previewSize.width;
+            int previewHeight = previewSize.height;
+
+
             // lets convert preview to bytearray that we can use
-            YuvImage imageConvert;
-            try {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                imageConvert = new YuvImage(this.imageData, params.getPreviewFormat(), params.getPreviewSize().width, params.getPreviewSize().height, null);
-                imageConvert.compressToJpeg(new Rect(0, 0, params.getPreviewSize().width, params.getPreviewSize().height), quality, baos);//this line decreases the image quality
-                this.imageData = baos.toByteArray();
-                baos = null;
-            }
-            catch(Exception e){
-                android.util.Log.e("RCTCamera","Convert preview",e);
-                return null;
-            }
+            YuvImage imageConvert = new YuvImage(this.imageData, previewFormat, previewWidth, previewHeight, null);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            int quality = 50; //set quality
+            imageConvert.compressToJpeg(new Rect(0, 0, previewWidth, previewHeight), quality, baos);//this line decreases the image quality
+            this.imageData = baos.toByteArray();
+
 
             // find rotation that will be used for Mutable Image
             int deviceRotation = settings.getActualDeviceOrientation();
