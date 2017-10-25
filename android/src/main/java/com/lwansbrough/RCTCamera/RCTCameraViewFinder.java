@@ -315,13 +315,16 @@ class RCTCameraViewFinder extends TextureView implements TextureView.SurfaceText
                 return null;
             }
 
+            int previewFormat = 0;
+            int previewWidth = 0;
+            int previewHeight = 0;
             RCTCamera settings = RCTCamera.getInstance();
             try {
                 Camera.Parameters parameters = camera.getParameters();
                 Camera.Size previewSize = camera.getParameters().getPreviewSize();
-                int previewFormat = parameters.getPreviewFormat();
-                int previewWidth = previewSize.width;
-                int previewHeight = previewSize.height;
+                previewFormat = parameters.getPreviewFormat();
+                previewWidth = previewSize.width;
+                previewHeight = previewSize.height;
             } catch (Exception e) {
                 e.printStackTrace();
                 new ReaderAsyncTask(RCTCamera.getInstance().acquireCameraInstance(_cameraType), imageData).execute();
